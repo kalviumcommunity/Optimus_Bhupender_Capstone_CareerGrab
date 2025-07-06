@@ -17,8 +17,8 @@ CareerGrab is a web application that allows employers to post jobs and job seeke
 | **Day 1** | Finalize project idea |
 | **Day 2** | create low-fidelity wireframes |
 | **Day 3** | create high-fidelity designs |
-| **Day 4** | setup GitHub repository, create README |
-| **Day 5** | setup GitHub Projects and Issues |
+| **Day 4** | Setup GitHub repository, create README |
+| **Day 5** | Setup GitHub Projects and Issues |
 | **Day 6** | Initialize NodeJS backend, setup Express server, design MongoDB schema |
 | **Day 7** | Implement database models and relationships |
 | **Day 8** | Implement POST and GET APIs |
