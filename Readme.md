@@ -27,7 +27,7 @@ CareerGrab is a web application that allows employers to post jobs and job seeke
 | **Day 11** | Deploy backend server |
 | **Day 12** | Initialize React app, set up routing |
 | **Day 13** | Build core React components (Navbar, Job Card, etc.) |
-| **Day 14** | Matching design and end state |
+| **Day 14** | Implement UI to match high-fidelity designs |
 | **Day 15** | Deploy frontend |
 | **Day 16** | Connect frontend with backend, implement job listing |
 | **Day 17** | Implement job posting + file upload |
