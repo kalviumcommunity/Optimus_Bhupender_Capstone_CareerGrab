@@ -23,7 +23,7 @@ CareerGrab is a web application that allows employers to post jobs and job seeke
 | **Day 7** | Implement database models and relationships |
 | **Day 8** | Implement POST and GET APIs |
 | **Day 9** | Implement PUT and DELETE APIs, add validation |
-| **Day 10** | Implement JWT authentication and Google OAuth |
+| **Day 10** | Implement backend JWT and Google OAuth |
 | **Day 11** | Deploy backend server |
 | **Day 12** | Initialize React app, set up routing |
 | **Day 13** | Build core React components (Navbar, Job Card, etc.) |
