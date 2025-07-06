@@ -31,8 +31,8 @@ CareerGrab is a web application that allows employers to post jobs and job seeke
 | **Day 15** | Deploy frontend |
 | **Day 16** | Connect frontend with backend, implement job listing |
 | **Day 17** | Implement job posting + file upload |
-| **Day 18** | Implement authentication (username / password) |
-| **Day 19** | Implement authentication (3rd party - like google) |
+| **Day 18** | Implement frontend authentication (username/password) |
+| **Day 19** | Implement frontend authentication (Google) |
 | **Day 20** | Implement update/delete an entity on frontend |
 | **Day 21** | Update bruno/API templates in application repo |
 | **Day 22** | Using JWTs in application |
