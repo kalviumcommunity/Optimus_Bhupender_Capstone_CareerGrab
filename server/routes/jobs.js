@@ -28,4 +28,10 @@ router.post('/', (req, res) => {
     const { title, description, location, salary, type } = req.body;
     res.send(`New job created: ${title} - ${description} in ${location} with salary ${salary} (${type})`);
 });
+
+// PUT /applications/:id - Update an application
+router.put('/:id', (req, res) => {
+    const { jobId, userId, coverLetter, resume, status } = req.body;
+    res.send(`Application ID ${req.params.id} updated: Job ID ${jobId}, User ID ${userId}, Status: ${status}, Cover Letter: ${coverLetter}`);
+});
 module.exports = router;
