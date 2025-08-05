@@ -23,4 +23,9 @@ router.get('/employer/:employerId', (req, res) => {
     res.send(`Jobs posted by employer ID: ${req.params.employerId}`);
 });
 
+// POST /jobs - Create a new job
+router.post('/', (req, res) => {
+    const { title, description, location, salary, type } = req.body;
+    res.send(`New job created: ${title} - ${description} in ${location} with salary ${salary} (${type})`);
+});
 module.exports = router;
