@@ -26,6 +26,18 @@ router.post('/auth/login', (req, res) => {
 // POST /auth/logout - Log out current user
 router.post('/auth/logout', (req, res) => {
     res.send('User successfully logged out');
-}); 
+});
+
+// PUT /users/me - Update current user profile
+router.put('/me', (req, res) => {
+    const { name, email, phone, location, bio } = req.body;
+    res.send(`User profile updated: ${name} (${email}), Phone: ${phone}, Location: ${location}, Bio: ${bio}`);
+});
+
+// PUT /users/update_password - Update user password
+router.put('/updatePassword', (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    res.send(`Password updated successfully for current user`);
+});
 
 module.exports = router;

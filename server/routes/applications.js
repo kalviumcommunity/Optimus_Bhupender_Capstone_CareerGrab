@@ -17,5 +17,11 @@ router.post('/', (req, res) => {
     res.send(`New application created for job ID: ${jobId} by user ID: ${userId} with cover letter: ${coverLetter}`);
 });
 
+// PUT /jobs/:id - Update an existing job
+router.put('/:id', (req, res) => {
+    const { title, description, location, salary, type } = req.body;
+    res.send(`Job ID ${req.params.id} updated: ${title} - ${description} in ${location} with salary ${salary} (${type})`);
+});
+
 
 module.exports = router;
