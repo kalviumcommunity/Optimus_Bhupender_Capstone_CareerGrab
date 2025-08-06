@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
+const Job = require('../models/Job');
 
 // GET /jobs - List all jobs with optional filtering
 router.get('/', (req, res) => {
@@ -24,14 +26,24 @@ router.get('/employer/:employerId', (req, res) => {
 });
 
 // POST /jobs - Create a new job
-router.post('/', (req, res) => {
-    const { title, description, location, salary, type } = req.body;
+router.post('/', auth, async (req, res, next) => {
+    const postedBy = req.userId;
+    const { title, description, location, salary, type, category, company, companyLogo, companySize, companyIndustry, companyWebsite } = req.body;
+    job = new Job({
+        title,
+        description,
+        type,
+        salary,
+        type,
+        category,
+        company,
+        location,
+        companySize,
+        companyIndustry,
+        companyWebsite,
+        postedBy
+    });
+    await job.save();
     res.send(`New job created: ${title} - ${description} in ${location} with salary ${salary} (${type})`);
-});
-
-// PUT /applications/:id - Update an application
-router.put('/:id', (req, res) => {
-    const { jobId, userId, coverLetter, resume, status } = req.body;
-    res.send(`Application ID ${req.params.id} updated: Job ID ${jobId}, User ID ${userId}, Status: ${status}, Cover Letter: ${coverLetter}`);
 });
 module.exports = router;
