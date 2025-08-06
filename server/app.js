@@ -1,5 +1,6 @@
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors');   
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const usersRoutes = require('./routes/users');
@@ -14,6 +15,14 @@ app.use(express.json());
 app.use('/users', usersRoutes);
 app.use('/jobs', jobsRoutes);
 app.use('/applications', applicationsRoutes);
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('MongoDB connected'))
+    .catch((err) => console.error('MongoDB connection error:', err));
 
 app.get('/', (req, res) => {
     res.send('Career Grab API is running!');
