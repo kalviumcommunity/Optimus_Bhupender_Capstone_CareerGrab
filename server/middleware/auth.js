@@ -18,7 +18,7 @@ const auth = async (req, res, next) => {
         }
 
         // Add user info to request object
-        req.userId = userId;
+        req.user = user;
 
         next();
     } catch (err) {

@@ -1,49 +1,142 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
 const Job = require('../models/Job');
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
 
-// GET /jobs - List all jobs with optional filtering
-router.get('/', (req, res) => {
-    const { search, location, type } = req.query;
-    let response = 'List of all jobs';
+// List all jobs (with optional filters)
+router.get('/', async (req, res, next) => {
+    try {
+        const {
+            title,
+            location,
+            company,
+            type,
+            category,
+            experience,
+            remote,
+            status
+        } = req.query;
 
-    if (search) response += ` filtered by search: ${search}`;
-    if (location) response += ` in location: ${location}`;
-    if (type) response += ` of type: ${type}`;
+        const filter = {};
+        if (title) filter.title = new RegExp(title, 'i');
+        if (location) filter.location = new RegExp(location, 'i');
+        if (company) filter.company = new RegExp(company, 'i');
+        if (type) filter.type = type;
+        if (category) filter.category = new RegExp(category, 'i');
+        if (experience) filter.experience = experience;
+        if (remote !== undefined) filter.remote = remote === 'true';
+        if (status) filter.status = status;
 
-    res.send(response);
+        const jobs = await Job.find(filter).populate('postedBy', 'name email');
+        res.json(jobs);
+    } catch (err) {
+        next(err);
+    }
 });
 
-// GET /jobs/:id - Get specific job details
-router.get('/:id', (req, res) => {
-    res.send(`Job details for job ID: ${req.params.id}`);
+// Get job details by ID
+router.get('/:id', async (req, res, next) => {
+    try {
+        const job = await Job.findById(req.params.id).populate('postedBy', 'name email');
+        if (!job) return res.status(404).json({ message: 'Job not found' });
+        res.json(job);
+    } catch (err) {
+        next(err);
+    }
 });
 
-// GET /jobs/employer/:employerId - Get jobs by employer
-router.get('/employer/:employerId', (req, res) => {
-    res.send(`Jobs posted by employer ID: ${req.params.employerId}`);
+// Create a new job (employer only)
+router.post('/', auth, role('employer'), async (req, res, next) => {
+    try {
+        const {
+            title,
+            description,
+            company,
+            location,
+            type,
+            category,
+            experience,
+            salary,
+            salaryType,
+            requirements,
+            benefits,
+            remote,
+            companyLogo,
+            companySize,
+            companyIndustry,
+            companyWebsite,
+            status
+        } = req.body;
+
+        const job = new Job({
+            title,
+            description,
+            company,
+            location,
+            type,
+            category,
+            experience,
+            salary,
+            salaryType,
+            requirements,
+            benefits,
+            remote,
+            companyLogo,
+            companySize,
+            companyIndustry,
+            companyWebsite,
+            status,
+            postedBy: req.user.id
+        });
+        await job.save();
+        res.status(201).json(job);
+    } catch (err) {
+        next(err);
+    }
 });
 
-// POST /jobs - Create a new job
-router.post('/', auth, async (req, res, next) => {
-    const postedBy = req.userId;
-    const { title, description, location, salary, type, category, company, companyLogo, companySize, companyIndustry, companyWebsite } = req.body;
-    job = new Job({
-        title,
-        description,
-        type,
-        salary,
-        type,
-        category,
-        company,
-        location,
-        companySize,
-        companyIndustry,
-        companyWebsite,
-        postedBy
-    });
-    await job.save();
-    res.send(`New job created: ${title} - ${description} in ${location} with salary ${salary} (${type})`);
+// Get job statistics for employer
+router.get('/stats/employer', auth, role('employer'), async (req, res, next) => {
+    try {
+        const jobs = await Job.find({ postedBy: req.user.id });
+        const Application = require('../models/Application');
+
+        const stats = {
+            totalJobs: jobs.length,
+            activeJobs: jobs.filter(job => job.status === 'active').length,
+            closedJobs: jobs.filter(job => job.status === 'closed').length,
+            draftJobs: jobs.filter(job => job.status === 'draft').length
+        };
+
+        // Get application counts for each job
+        const jobIds = jobs.map(job => job._id);
+        const applications = await Application.find({ job: { $in: jobIds } });
+
+        stats.totalApplications = applications.length;
+        stats.applicationsByStatus = {
+            pending: applications.filter(app => app.status === 'pending').length,
+            reviewed: applications.filter(app => app.status === 'reviewed').length,
+            shortlisted: applications.filter(app => app.status === 'shortlisted').length,
+            interviewed: applications.filter(app => app.status === 'interviewed').length,
+            accepted: applications.filter(app => app.status === 'accepted').length,
+            rejected: applications.filter(app => app.status === 'rejected').length
+        };
+
+        res.json(stats);
+    } catch (err) {
+        next(err);
+    }
 });
+
+// Get jobs posted by a specific employer
+router.get('/employer/:employerId', async (req, res, next) => {
+    try {
+        const jobs = await Job.find({ postedBy: req.params.employerId });
+        res.json(jobs);
+    } catch (err) {
+        next(err);
+    }
+});
+
 module.exports = router;
